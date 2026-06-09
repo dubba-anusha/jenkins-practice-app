@@ -1,1 +1,2 @@
-This line does not have the required keyword
+Hello from Jenkins GitHub pipeline
+This file was fixed after failed Jenkins test
