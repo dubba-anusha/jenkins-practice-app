@@ -13,11 +13,28 @@ pipeline {
                 sh 'ls -l'
             }
         }
+cat > Jenkinsfile <<'EOF'
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                echo 'Code checked out from GitHub'
+                sh 'ls -l'
+            }
+        }
 
         stage('Build') {
             steps {
                 sh 'mkdir -p target'
                 sh 'cp app.txt target/app-output.txt'
+                sh 'echo "Jenkins Build Number: $BUILD_NUMBER" >> target/app-output.txt'
                 sh 'echo "Build completed successfully"'
             }
         }
@@ -36,3 +53,4 @@ pipeline {
         }
     }
 }
+EOF
