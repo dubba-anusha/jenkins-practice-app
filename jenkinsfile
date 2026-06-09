@@ -5,11 +5,16 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
+    environment {
+        APP_NAME = 'jenkins-practice-app'
+        OUTPUT_FILE = 'app-output.txt'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                echo 'Code checked out from GitHub'
+                echo "Checking out code for ${APP_NAME}"
                 sh 'ls -l'
             }
         }
@@ -17,16 +22,18 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mkdir -p target'
-                sh 'cp app.txt target/app-output.txt'
-                sh 'echo "Jenkins Build Number: $BUILD_NUMBER" >> target/app-output.txt'
+                sh 'cp app.txt target/$OUTPUT_FILE'
+                sh 'echo "Application Name: $APP_NAME" >> target/$OUTPUT_FILE'
+                sh 'echo "Build Number: $BUILD_NUMBER" >> target/$OUTPUT_FILE'
                 sh 'echo "Build completed successfully"'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'test -f target/app-output.txt'
-                sh 'echo "Test passed: output file exists"'
+                sh 'test -f target/$OUTPUT_FILE'
+                sh 'grep "Hello" target/$OUTPUT_FILE'
+                sh 'echo "Test passed: file exists and contains Hello"'
             }
         }
 
