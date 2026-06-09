@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    options {
+        skipDefaultCheckout(true)
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                echo 'Code checked out from GitHub'
+                sh 'ls -l'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mkdir -p target'
+                sh 'cp app.txt target/app-output.txt'
+                sh 'echo "Build completed successfully"'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'test -f target/app-output.txt'
+                sh 'echo "Test passed: output file exists"'
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                archiveArtifacts artifacts: 'target/app-output.txt', fingerprint: true
+            }
+        }
+    }
+}
